@@ -4,6 +4,8 @@ import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 
+
+
 const emailReducer = (state, action) => {
   if (action.type === 'USER_INPUT') {
     return { value: action.val, isValid: action.val.includes('@') };
@@ -23,15 +25,15 @@ const passwordReducer = (state, action) => {
   }
   return { value: '', isValid: false };
 };
-const collegeNameReducer = (state, action) => {
-  if (action.type === 'USER_INPUT') {
-    return { value: action.val, isValid: action.val.trim().length > 6 };
-  }
-  if (action.type === 'INPUT_BLUR') {
-    return { value: state.value, isValid: state.value.trim().length > 6 };
-  }
-  return { value: '', isValid: false };
-};
+// const collegeNameReducer = (state, action) => {
+//   if (action.type === 'USER_INPUT') {
+//     return { value: action.val, isValid: action.val.trim().length > 6 };
+//   }
+//   if (action.type === 'INPUT_BLUR') {
+//     return { value: state.value, isValid: state.value.trim().length > 6 };
+//   }
+//   return { value: '', isValid: false };
+// };
 const Login = (props) => {
   // const [enteredEmail, setEnteredEmail] = useState('');
   // const [emailIsValid, setEmailIsValid] = useState();
@@ -50,10 +52,11 @@ const Login = (props) => {
     value: '',
     isValid: null,
   });
-  const [collegeNameState, dispatchCollegeName] = useReducer(collegeNameReducer, {
-    value: '',
-    isValid: null,
-  });
+  // const [collegeNameState, dispatchCollegeName] = useReducer(collegeNameReducer, {
+  //   value: '',
+  //   isValid: null,
+  // });
+
   useEffect(() => {
     console.log('EFFECT RUNNING');
 
@@ -63,22 +66,22 @@ const Login = (props) => {
   }, []);
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid } = passwordState;
-  const {isValid: collegeNameIsValid} = collegeNameState;
+  // const {isValid: collegeNameIsValid} = collegeNameState;
 
   useEffect(() => {
     const identifier = setTimeout(() => {
       console.log('Checking form validity!');
-      setFormIsValid(emailIsValid && passwordIsValid && collegeNameIsValid);
+      setFormIsValid(emailIsValid && passwordIsValid );
     }, 500);
 
     return () => {
       console.log('CLEANUP');
       clearTimeout(identifier);
     };
-  }, [emailIsValid, passwordIsValid,  collegeNameIsValid]);
-  const collegeNameChangeHandler = (event) => {
-    dispatchCollegeName({ type: 'USER_INPUT', val: event.target.value });
-    };
+  }, [emailIsValid, passwordIsValid]);
+  // const collegeNameChangeHandler = (event) => {
+  //   dispatchCollegeName({ type: 'USER_INPUT', val: event.target.value });
+  //   };
   const emailChangeHandler = (event) => {
     dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
 
@@ -94,9 +97,9 @@ const Login = (props) => {
     // setFormIsValid(emailState.isValid && event.target.value.trim().length > 6);
   };
 
-  const validateCollegeNameHandler = () => {
-    dispatchCollegeName({ type: 'INPUT_BLUR' });
-  };
+  // const validateCollegeNameHandler = () => {
+  //   dispatchCollegeName({ type: 'INPUT_BLUR' });
+  // };
   const validateEmailHandler = () => {
     dispatchEmail({ type: 'INPUT_BLUR' });
   };
@@ -109,11 +112,10 @@ const Login = (props) => {
     event.preventDefault();
     props.onLogin(emailState.value, passwordState.value);
   };
-
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
-        <div
+        {/* <div
           className={`${classes.control} ${
             collegeNameIsValid === false ? classes.invalid : ''
           }`}
@@ -126,10 +128,10 @@ const Login = (props) => {
             onChange={collegeNameChangeHandler}
             onBlur={validateCollegeNameHandler}
           />
-        </div>
+        </div> */}
         <div
           className={`${classes.control} ${
-            emailIsValid === false ? classes.invalid : ''
+            emailState.isValid === false ? classes.invalid : ''
           }`}
         >
           <label htmlFor="email">E-Mail</label>
@@ -143,7 +145,7 @@ const Login = (props) => {
         </div>
         <div
           className={`${classes.control} ${
-            passwordIsValid === false ? classes.invalid : ''
+            passwordState.isValid === false ? classes.invalid : ''
           }`}
         >
           <label htmlFor="password">Password</label>
